@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="jhxTube"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option active_target="0"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="wxStatic (mono, release)">
+				<Option output="..\bin\jhxTube.exe"/>
+				<Option working_dir="."/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="0"/>
+				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="0"/>
+				<Compiler>
+					<Add option="-Os"/>
+					<Add option="-D__GNUWIN32__"/>
+					<Add option="-D__WXMSW__"/>
+					<Add option="-DUSE_PCH"/>
+					<Add directory="$(WX_DIR)\lib\gcc_lib$(WX_CFG)\msw"/>
+				</Compiler>
+				<Linker>
+					<Add option="-s"/>
+					<Add directory="$(WX_DIR)\lib\gcc_lib$(WX_CFG)"/>
+				</Linker>
+			</Target>
+			<Target title="wxDLL (mono, release)">
+				<Option output="..\bin\jhxTube.exe"/>
+				<Option working_dir="."/>
+				<Option object_output=".objs"/>
+				<Option deps_output=".deps"/>
+				<Option type="0"/>
+				<Option compiler="0"/>
+				<Option projectResourceIncludeDirsRelation="0"/>
+				<Compiler>
+					<Add option="-Os"/>
+					<Add option="-D__GNUWIN32__"/>
+					<Add option="-D__WXMSW__"/>
+					<Add option="-DWXUSINGDLL"/>
+					<Add option="-DUSE_PCH"/>
+					<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)\msw"/>
+				</Compiler>
+				<Linker>
+					<Add option="-s"/>
+					<Add directory="$(WX_DIR)\lib\gcc_dll$(WX_CFG)"/>
+				</Linker>
+			</Target>
+			<Environment>
+				<Variable name="WX_DIR" value="C:\CODINGLIBS\wxWidgets-2.6.2"/>
+				<Variable name="WX_CFG" value=""/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-pipe"/>
+			<Add option="-mthreads"/>
+			<Add option="-Winvalid-pch"/>
+			<Add option="-include &quot;wx_pch.h&quot;"/>
+			<Add directory="$(WX_DIR)\include"/>
+			<Add directory="$(WX_DIR)\contrib\include"/>
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(WX_DIR)\include"/>
+		</ResourceCompiler>
+		<Linker>
+			<Add library="wxmsw26_gl"/>
+			<Add library="wxmsw26"/>
+			<Add library="wxzlib"/>
+			<Add library="wxpng"/>
+			<Add library="winspool"/>
+			<Add library="winmm"/>
+			<Add library="shell32"/>
+			<Add library="comctl32"/>
+			<Add library="ctl3d32"/>
+			<Add library="odbc32"/>
+			<Add library="advapi32"/>
+			<Add library="wsock32"/>
+			<Add library="opengl32"/>
+			<Add library="glu32"/>
+			<Add library="ole32"/>
+			<Add library="oleaut32"/>
+			<Add library="uuid"/>
+			<Add library="wxexpat"/>
+			<Add library="wxregex"/>
+		</Linker>
+		<Unit filename="resource.xrc">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxStatic (mono, release)"/>
+			<Option target="wxDLL (mono, release)"/>
+		</Unit>
+		<Unit filename="tube_frame.cc">
+			<Option compilerVar="CC"/>
+			<Option target="wxStatic (mono, release)"/>
+			<Option target="wxDLL (mono, release)"/>
+		</Unit>
+		<Unit filename="tube_frame.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxStatic (mono, release)"/>
+			<Option target="wxDLL (mono, release)"/>
+		</Unit>
+		<Unit filename="tube_main.cc">
+			<Option compilerVar="CC"/>
+			<Option target="wxStatic (mono, release)"/>
+			<Option target="wxDLL (mono, release)"/>
+		</Unit>
+		<Unit filename="tube_main.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="wxStatic (mono, release)"/>
+			<Option target="wxDLL (mono, release)"/>
+		</Unit>
+		<Unit filename="winres.rc">
+			<Option compilerVar="WINDRES"/>
+			<Option objectName="winres.res"/>
+			<Option target="wxStatic (mono, release)"/>
+			<Option target="wxDLL (mono, release)"/>
+		</Unit>
+		<Unit filename="wx_pch.h">
+			<Option compilerVar="CPP"/>
+			<Option link="0"/>
+			<Option weight="0"/>
+			<Option target="wxStatic (mono, release)"/>
+			<Option target="wxDLL (mono, release)"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: jhxTube\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2005-12-04 13:25+0100\n"
+"Last-Translator: Jahn Fuchs <jahn [at] jhx [dot] de>\n"
+"Language-Team: Jahn Fuchs (jhx) <jahn@jhx.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Poedit-KeywordsList: _\n"
+"X-Poedit-Basepath: P:\\coding\\jhxTube\n"
+"X-Poedit-SearchPath-0: src\n"
+
+#: src/resource_strings.cpp:1
+msgid "jhxTube"
+msgstr "jhxTube"
+
+#: src/resource_strings.cpp:2
+msgid "About jhxTube"
+msgstr "Über jhxTube"
+
+#: src/resource_strings.cpp:3
+msgid "jhxTube Version 0.21 Build 983"
+msgstr "jhxTube Version 0.21 Build 983"
+
+#: src/resource_strings.cpp:4
+msgid "&Ok"
+msgstr "&Ok"
+
+#: src/resource_strings.cpp:5
+msgid "&File"
+msgstr "&Datei"
+
+#: src/resource_strings.cpp:6
+msgid "E&xit\tAlt-X"
+msgstr "E&xit\tAlt-X"
+
+#: src/resource_strings.cpp:7
+msgid "&Options"
+msgstr "&Optionen"
+
+#: src/resource_strings.cpp:8
+msgid "Select language..."
+msgstr "Sprachauswahl..."
+
+#: src/resource_strings.cpp:9
+msgid "&Help"
+msgstr "&Hilfe"
+
+#: src/resource_strings.cpp:10
+msgid "&About..."
+msgstr "Ü&ber..."
+
+#: src/tube_frame.cc:99
+msgid "THIS IS A BETA VERSION. DO..."
+msgstr "THIS IS A BETA VERSION. DO..."
+
+#: src/tube_frame.cc:109
+msgid "English"
+msgstr "Englisch"
+
+#: src/tube_frame.cc:113
+msgid "German"
+msgstr "Deutsch"
+
+#: src/tube_frame.cc:115
+msgid "Select Language:"
+msgstr "Sprache auswählen:"
+
+#: src/tube_frame.cc:116
+msgid "Language"
+msgstr "Sprache"
+
