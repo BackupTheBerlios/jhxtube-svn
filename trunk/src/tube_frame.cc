@@ -72,13 +72,26 @@ TubeFrame::TubeFrame(wxWindow* parent)//, wxLocale& locale):m_locale(locale)
 
     // Load up this frame from XRC.
     wxXmlResource::Get()->LoadFrame(this, parent, wxT("tube_frame"));
-
     //SetIcon(wxXmlResource::Get()->LoadIcon(wxT("appicon.xpm")));
     SetMenuBar(wxXmlResource::Get()->LoadMenuBar(wxT("tube_menubar")));
-    //wxFrame *frame2 = new wxFrame();
-    //wxBoxSizer* topSizer = new wxBoxSizer(wxVERTICAL);
-    //SetSizer(topSizer);
-    //topSizer->Add(frame2);
+	// Set main window size
+    SetSize(550,400);
+
+	// get the Pointer on the glpanel resource
+	wxPanel* glpanel = XRCCTRL(*this,wxT("glpanel"),wxPanel);
+	// automatically take care of Constraints in OnSize();
+	glpanel->SetAutoLayout(true);
+	// Create GLCanvas on "glpanel"
+ 	this->SetCanvas( new TubeGLCanvas( glpanel, wxID_ANY,
+					 wxDefaultPosition, glpanel->GetSize(), wxSUNKEN_BORDER) );
+
+	wxLayoutConstraints *c = new wxLayoutConstraints;
+	c->left.SameAs( glpanel, wxLeft );
+	c->height.SameAs( glpanel, wxHeight );
+	c->top.SameAs( glpanel, wxTop );
+	c->right.SameAs( glpanel, wxRight );
+	// Set the constraints for our GLCanvas
+	this->m_canvas->SetConstraints( c );
 
 }
 
@@ -86,6 +99,7 @@ TubeFrame::TubeFrame(wxWindow* parent)//, wxLocale& locale):m_locale(locale)
 //-----------------------------------------------------------------------------
 // Private methods
 //-----------------------------------------------------------------------------
+
 
 void TubeFrame::RepaintStrings()
 {
@@ -102,7 +116,7 @@ void TubeFrame::OnAboutCommand(wxCommandEvent& WXUNUSED(event))
 {
     wxDialog dlg; wxStaticText* label;
     wxXmlResource::Get()->LoadDialog(&dlg, this, wxT("about_dialog"));
-    label = XRCCTRL(*this,"label_about_version",wxStaticText);
+    label = XRCCTRL(*this,wxT("label_about_version"),wxStaticText);
     label->SetLabel(wxString(_("THIS IS A BETA VERSION. DO...")));
     dlg.ShowModal();
 }
@@ -130,6 +144,16 @@ void TubeFrame::OnLanguageSelectCommand(wxCommandEvent& WXUNUSED(event))
 
 
 
+//----------------------- TUBE GL CANVAS -------------------------------------
+
+
+BEGIN_EVENT_TABLE(TubeGLCanvas, wxGLCanvas)
+    EVT_PAINT(TubeGLCanvas::OnPaint)
+    EVT_ENTER_WINDOW( TubeGLCanvas::OnEnterWindow )
+    EVT_SIZE(TubeGLCanvas::OnSize)
+    EVT_ERASE_BACKGROUND(TubeGLCanvas::OnEraseBackground)
+END_EVENT_TABLE()
+
 
 TubeGLCanvas::TubeGLCanvas(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style, const wxString& name)
@@ -138,9 +162,126 @@ TubeGLCanvas::TubeGLCanvas(wxWindow *parent, wxWindowID id,
     //block = false;
 }
 TubeGLCanvas::~TubeGLCanvas()
+{}
+
+void TubeGLCanvas::OnEnterWindow( wxMouseEvent& WXUNUSED(event) )
 {
-    /* destroy mesh */
-    //lw_object_free(info.lwobject);
+    SetFocus();
 }
 
+void TubeGLCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
+{
+    Render();
+}
+
+void TubeGLCanvas::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
+{
+  // Do nothing, to avoid flashing.
+}
+
+void TubeGLCanvas::OnSize(wxSizeEvent& event)
+{
+    // this is also necessary to update the context on some platforms
+    wxGLCanvas::OnSize(event);
+    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
+    int w, h;
+    GetParent()->GetSize(&w, &h);
+
+#ifndef __WXMOTIF__
+    if (GetContext())
+#endif
+    {
+        SetCurrent();
+        glViewport(0, 0, (GLint) w, (GLint) h);
+    }
+}
+
+
+void TubeGLCanvas::InitGL()
+{
+    SetCurrent();
+
+    /* set viewing projection */
+    glMatrixMode(GL_PROJECTION);
+    glFrustum(-0.5f, 0.5f, -0.5f, 0.5f, 1.0f, 3.0f);
+
+    /* position viewer */
+    glMatrixMode(GL_MODELVIEW);
+    glTranslatef(0.0f, 0.0f, -2.0f);
+
+    /* position object */
+    glRotatef(30.0f, 1.0f, 0.0f, 0.0f);
+    glRotatef(30.0f, 0.0f, 1.0f, 0.0f);
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+}
+
+
+void TubeGLCanvas::Render()  // example Render() function
+{
+    wxPaintDC dc(this);
+
+#ifndef __WXMOTIF__
+    if (!GetContext()) return;
+#endif
+
+    SetCurrent();
+    // Init OpenGL once, but after SetCurrent
+    if (!m_init)
+    {
+        InitGL();
+        m_init = true;
+    }
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum(-0.5f, 0.5f, -0.5f, 0.5f, 1.0f, 3.0f);
+    glMatrixMode(GL_MODELVIEW);
+
+    /* clear color and depth buffers */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if( m_gllist == 0 )
+    {
+        m_gllist = glGenLists( 1 );
+        glNewList( m_gllist, GL_COMPILE_AND_EXECUTE );
+        /* draw six faces of a cube */
+        glBegin(GL_QUADS);
+        glNormal3f( 0.0f, 0.0f, 1.0f);
+        glVertex3f( 0.5f, 0.5f, 0.5f); glVertex3f(-0.5f, 0.5f, 0.5f);
+        glVertex3f(-0.5f,-0.5f, 0.5f); glVertex3f( 0.5f,-0.5f, 0.5f);
+
+        glNormal3f( 0.0f, 0.0f,-1.0f);
+        glVertex3f(-0.5f,-0.5f,-0.5f); glVertex3f(-0.5f, 0.5f,-0.5f);
+        glVertex3f( 0.5f, 0.5f,-0.5f); glVertex3f( 0.5f,-0.5f,-0.5f);
+
+        glNormal3f( 0.0f, 1.0f, 0.0f);
+        glVertex3f( 0.5f, 0.5f, 0.5f); glVertex3f( 0.5f, 0.5f,-0.5f);
+        glVertex3f(-0.5f, 0.5f,-0.5f); glVertex3f(-0.5f, 0.5f, 0.5f);
+
+        glNormal3f( 0.0f,-1.0f, 0.0f);
+        glVertex3f(-0.5f,-0.5f,-0.5f); glVertex3f( 0.5f,-0.5f,-0.5f);
+        glVertex3f( 0.5f,-0.5f, 0.5f); glVertex3f(-0.5f,-0.5f, 0.5f);
+
+        glNormal3f( 1.0f, 0.0f, 0.0f);
+        glVertex3f( 0.5f, 0.5f, 0.5f); glVertex3f( 0.5f,-0.5f, 0.5f);
+        glVertex3f( 0.5f,-0.5f,-0.5f); glVertex3f( 0.5f, 0.5f,-0.5f);
+
+        glNormal3f(-1.0f, 0.0f, 0.0f);
+        glVertex3f(-0.5f,-0.5f,-0.5f); glVertex3f(-0.5f,-0.5f, 0.5f);
+        glVertex3f(-0.5f, 0.5f, 0.5f); glVertex3f(-0.5f, 0.5f,-0.5f);
+        glEnd();
+
+        glEndList();
+    }
+    else
+    {
+        glCallList(m_gllist);
+    }
+
+    glFlush();
+    SwapBuffers();
+}
 

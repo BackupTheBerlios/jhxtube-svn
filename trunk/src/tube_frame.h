@@ -26,6 +26,7 @@
 #include "wx/glcanvas.h"
 #include "wx/frame.h"
 
+class TubeGLCanvas;
 
 //-----------------------------------------------------------------------------
 // Class definition: TubeFrame
@@ -39,7 +40,11 @@ public:
     // Constructor.
     TubeFrame( wxWindow* parent=(wxWindow *)NULL);
 
+    void SetCanvas( TubeGLCanvas *canvas ) { m_canvas = canvas; }
+    TubeGLCanvas *GetCanvas() { return m_canvas; }
+
 private:
+	TubeGLCanvas *m_canvas;
 	void RepaintStrings();
 
     // Event handlers (these functions should _not_ be virtual)
@@ -50,46 +55,42 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-class TubeGLCanvas;
 
-class GLFrame: public wxFrame
-{
-public:
-    GLFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
-        const wxSize& size, long style = wxDEFAULT_FRAME_STYLE);
-
-    //void OnExit(wxCommandEvent& event);
-   // void SetCanvas( TubeGLCanvas *canvas ) { m_canvas = canvas; }
-    //TubeGLCanvas *GetCanvas() { return m_canvas; }
-
-private:
-    TubeGLCanvas *m_canvas;
-
-    DECLARE_EVENT_TABLE()
-};
 
 class TubeGLCanvas: public wxGLCanvas
 {
 public:
-    TubeGLCanvas(wxWindow *parent, wxWindowID id = wxID_ANY,
-        const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize, long style = 0,
-        const wxString& name = wxT("TubeGLCanvas"));
+	TubeGLCanvas(wxWindow *parent, wxWindowID id = wxID_ANY,
+			const wxPoint& pos = wxDefaultPosition,
+			const wxSize& size = wxDefaultSize, long style = 0,
+			const wxString& name = wxT("TubeGLCanvas"));
 
     ~TubeGLCanvas();
 
-    //void OnPaint(wxPaintEvent& event);
-    //void OnSize(wxSizeEvent& event);
-    //void OnEraseBackground(wxEraseEvent& event);
-    //void LoadLWO( const wxString &filename);
-    //void OnMouse( wxMouseEvent& event );
-    //void InitGL();
+    void OnPaint(wxPaintEvent& event);
+    void OnEnterWindow(wxMouseEvent& event);
+	void OnSize(wxSizeEvent& event);
+    void OnEraseBackground(wxEraseEvent& event);
+	void Render();
+    void InitGL();
 
-    //mesh_info  info;
-    //bool       block;
+private:
+    bool   m_init;
+    GLuint m_gllist;
+    long   m_rleft;
+    long   m_rright;
 
-//private:
-   // DECLARE_EVENT_TABLE()
+    static unsigned long  m_secbase;
+    static int            m_TimeInitialized;
+    static unsigned long  m_xsynct;
+    static unsigned long  m_gsynct;
+
+    long           m_Key;
+    unsigned long  m_StartTime;
+    unsigned long  m_LastTime;
+    unsigned long  m_LastRedraw;
+
+    DECLARE_EVENT_TABLE()
 };
 
 
